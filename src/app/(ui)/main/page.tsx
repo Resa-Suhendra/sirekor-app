@@ -1,7 +1,5 @@
+import MainScreen from "@/screens/main/main";
+
 export default function Page() {
-  return (
-    <div>
-      <h1>Main Page</h1>
-    </div>
-  );
+  return <MainScreen/>
 }
