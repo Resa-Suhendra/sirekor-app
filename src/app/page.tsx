@@ -10,7 +10,7 @@ import {
 
 export default function Page() {
   return (
-    <div>
+    <div className="bg-red-500">
       <Button>asd</Button>
       <Dialog>
         <DialogTrigger>Open</DialogTrigger>
