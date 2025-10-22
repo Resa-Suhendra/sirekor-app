@@ -7,7 +7,15 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "docker:build": "docker build -t sirekor-app .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

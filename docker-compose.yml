@@ -1,0 +1,50 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: sirekor-postgres
+    environment:
+      POSTGRES_DB: sirekor_db
+      POSTGRES_USER: sirekor_user
+      POSTGRES_PASSWORD: sirekor_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sirekor_user -d sirekor_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sirekor-app
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://sirekor_user:sirekor_password@postgres:5432/sirekor_db
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+      - NEXT_PUBLIC_ENVIRONMENT=docker
+      - JWT_SECRET=your-jwt-secret-key-here
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./prisma:/app/prisma
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...' &&
+        sleep 10 &&
+        echo 'Running database migrations...' &&
+        bun prisma migrate deploy &&
+        echo 'Starting application...' &&
+        bun start
+      "
+
+volumes:
+  postgres_data:
